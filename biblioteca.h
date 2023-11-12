@@ -1,26 +1,31 @@
 #define maxtarefas 100
 
+
 typedef struct{
     char tarefa[100];
     char descricao[300];
     int prioridade;
     int existe;
+    char estado[100];
+    char categoria[100];
+    int posicao;
 }Tarefa;
 
+void limpar();
 
 void Menu();
 
-void ListarTarefas2();
+void ListarTarefas2(Tarefa Main[]);
 
-void CriarTarefa();
+void CriarTarefa(Tarefa Main[]);
 
-void DeletarTarefa();
+void DeletarTarefa(Tarefa Main[]);
 
-void ListarTarefas();
+void ListarTarefas(Tarefa Main[]);
 
-int criararquivo();
+int criararquivo(Tarefa Main[], char tarefasarq[]);
 
-int lerarquivo();
+int lerarquivo(Tarefa Main[], char tarefasarq[]);
 
 void AlterarTarefas(Tarefa Main[]);
 
