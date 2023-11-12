@@ -59,7 +59,9 @@ void Menu(){
     int opcao;
     do{
         printf(" --- MENU ---\n");
-        printf("1 - Criar tarefa\n2 - Deletar tarefa\n3 - Listar tarefas\n4 - Alterar tarefas\n0 - Sair.\n");
+        printf("1 - Criar tarefa\n2 - Deletar tarefa\n3 - Listar tarefas\n4 - Alterar tarefas\n
+        "5 - Filtrar tarefas pela prioridade\n6 - Filtrar tarefas pelo estado\n7 - Filtrar tarefas pela categoria\n"
+               "8 - Filtrar tarefas pela prioridade e pela categoria\n0 - Sair.\n");
         printf("Digite a operacao que deseja realizar: ");
         scanf("%d",&opcao);
         getchar();
@@ -77,6 +79,17 @@ void Menu(){
                 AlterarTarefas(Lista);
                 break;
             case 5:
+                FiltrarTarefasPrioridade(Lista);
+                break;
+            case 6:
+                FiltrarTarefasEstado(Lista);
+                break;
+            case 7:
+                FiltrarTarefasCategoria(Lista);
+                break;
+            case 8:
+                FiltrarTarefasPC(Lista);
+                break;
 
 void CriarTarefa(){
     char tarefa[100];
@@ -194,6 +207,132 @@ void AlterarTarefas(Tarefa Main[]){
         printf("\nA categoria da Tarefa foi alterada!");
     }
 };
+
+void FiltrarTarefasPrioridade(Tarefa Main[]){
+    int p;
+    printf("Digite a prioridade da Tarefa que deseja filtrar: ");
+    scanf("%d", &p);
+    for(int i = 0; i < maxtarefas; i++){
+        if (Main[i].prioridade == p)
+            printf("Tarefas filtradas com essa prioridade: %s\n", Main[i].tarefa);
+    }
+};
+
+void FiltrarTarefasEstado(Tarefa Main[]){
+    int num;
+    size_t a;
+    char e[20];
+    int x;
+    int x2;
+    int x3;
+    int x4;
+    char novoestado[20];
+    sprintf(novoestado, "Completo");
+    char novoestado2[20];
+    sprintf(novoestado2, "Em andamento");
+    char novoestado3[20];
+    sprintf(novoestado3, "Nao iniciado");
+    do{
+        printf("Digite qual o estado da Tarefa(Completo, Em andamento ou Nao iniciado): ");
+        fgets(e, sizeof(e),stdin);
+        a = strlen(e);
+        if (e[a - 1] == '\n') e[--a] = 0;
+        x = strcmp(e, novoestado);
+        x2 = strcmp(e, novoestado2);
+        x3 = strcmp(e, novoestado3);
+    } while (x != 0 && x2 != 0 && x3 != 0);
+    printf("Tarefas filtradas com esse estado: \n");
+    for(int i = 0; i < maxtarefas; i++){
+        x4 = strcmp(e, Main[i].estado);
+        if (x4 == 0){
+            num = num + 1;
+            printf("\n%s\n", Main[i].tarefa);
+        }
+    }
+}
+
+
+void FiltrarTarefasCategoria(Tarefa Main[]){
+    char c[15];
+    char categoria1[15];
+    char categoria2[15];
+    char categoria3[15];
+    char categoria4[15];
+    sprintf(categoria1, "Lazer");
+    sprintf(categoria2, "Estudos");
+    sprintf(categoria3, "Trabalho");
+    sprintf(categoria4, "Eventos");
+    int x1;
+    int x2;
+    int x3;
+    int x4;
+    int x5;
+    size_t b;
+    int num;
+    do{
+        printf("Digite a categoria da Tarefa que deseja filtrar(Lazer, Estudos, Trabalho ou Eventos): ");
+        fgets(c, sizeof(c), stdin);
+        b = strlen(c);
+        if(c[b - 1] == '\n')c[--b] = 0;
+        x1 = strcmp(c, categoria1);
+        x2 = strcmp(c, categoria2);
+        x3 = strcmp(c, categoria3);
+        x4 = strcmp(c, categoria4);
+    }while (x1 != 0 && x2 != 0 && x3 != 0 && x4 != 0);
+    printf("Tarefas filtradas com essa categoria: \n");
+    for(int i = 0; i < maxtarefas; i++){
+        x5 = strcmp(c, Main[i].categoria);
+        if (x5 == 0){
+            num = num + 1;
+            printf("\n%s\n", Main[i].tarefa);
+
+        }
+    }
+    if(num == 0){
+        printf("Nao existe tarefa com esta categoria!\n");
+    }
+}
+
+void FiltrarTarefasPC(Tarefa Main[]){
+    int p;
+    char c[15];
+    char categoria1[15];
+    char categoria2[15];
+    char categoria3[15];
+    char categoria4[15];
+    sprintf(categoria1, "Lazer");
+    sprintf(categoria2, "Estudos");
+    sprintf(categoria3, "Trabalho");
+    sprintf(categoria4, "Eventos");
+    int x1;
+    int x2;
+    int x3;
+    int x4;
+    int x5;
+    size_t b;
+    int num;
+    do{
+        printf("Digite a prioridade: ");
+        scanf("%d", &p);
+        limpar();
+        printf("Digite a categoria da Tarefa que deseja filtrar(Lazer, Estudos, Trabalho ou Eventos): ");
+        fgets(c, sizeof(c), stdin);
+        b = strlen(c);
+        if(c[b - 1] == '\n')c[--b] = 0;
+        x1 = strcmp(c, categoria1);
+        x2 = strcmp(c, categoria2);
+        x3 = strcmp(c, categoria3);
+        x4 = strcmp(c, categoria4);
+    }while (x1 != 0 && x2 != 0 && x3 != 0 && x4 != 0);
+    printf("Tarefas filtradas com essa prioridade e categoria: \n");
+    for(int i = 0; i < maxtarefas; i++){
+        x5 = strcmp(c, Main[i].categoria);
+        if (x5 == 0 && Main[i].prioridade == p){
+            num = num + 1;
+            printf("\n%s\n", Main[i].tarefa);
+        }
+    }
+}
 
 int lerarquivo(){
     FILE*arqtarefas = fopen("arqtarefas","rb");
