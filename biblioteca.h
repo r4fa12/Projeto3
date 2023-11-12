@@ -31,3 +31,9 @@ void FiltrarTarefasEstado(Tarefa Main[]);
 void FiltrarTarefasCategoria(Tarefa Main[]);
 
 void FiltrarTarefasPC(Tarefa Main[]);
+
+void ExportarTarefasPrioridade(Tarefa Main[]);
+
+void ExportarTarefasCategoria(Tarefa Main[]);
+
+void ExportarTarefasPC(Tarefa Main[]);
