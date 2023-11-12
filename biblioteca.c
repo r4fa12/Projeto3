@@ -16,34 +16,67 @@ int criararquivo(){
     return 0;
 }
 
-void Menu(){
-  int cod;
-  cod = lerarquivo();
-  if(cod == 1){
-    printf("Nao foi possivel ler o arquivo!");
-  }
-  Tarefa *tarefa = malloc(sizeof(Tarefa));
-  int opcao;
-  do{                                             
-      printf(" --- MENU ---\n");
-      printf("1 - Criar tarefa.\n2 - Deletar tarefa.\n3 - Listar tarefas.\n0 - Sair.\n");
-      printf("Digite a operacao que deseja realizar: ");
-      scanf("%d",&opcao);
-      getchar();
-      switch(opcao){                  
-          case 1:
-              CriarTarefa();
-          break;
-          case 2:
-              DeletarTarefa();
-          break;
-          case 3:
-              ListarTarefas();
-          break;
-        };
-    }while(opcao != 0);
-    criararquivo();
+#include "biblioteca.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+void limpar() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {}
+};
+
+
+int criararquivo(Tarefa Main[], char nome_arquivo[]){
+    FILE *arqtarefas = fopen(nome_arquivo,"wb");
+    if(arqtarefas == NULL){
+        return 1;
+    }
+    fwrite(&Main,sizeof(Tarefa),maxtarefas,arqtarefas);
+    fclose(arqtarefas);
+    return 0;
 }
+
+int lerarquivo(Tarefa Main[], char nome_arquivo[]){
+    FILE *arqtarefas = fopen(nome_arquivo,"rb");
+    if(arqtarefas == NULL){
+        return 1;
+    }
+    fread(&Main,sizeof(Tarefa),maxtarefas,arqtarefas);
+    fclose(arqtarefas);
+    return 0;
+};
+
+void Menu(){
+    Tarefa Lista[maxtarefas];
+    int cod;
+    cod = lerarquivo(Lista, "arqtarefas");
+    if(cod == 1){
+        printf("Nao foi possivel ler o arquivo!");
+    }
+    Tarefa *tarefa = malloc(sizeof(Tarefa));
+    int opcao;
+    do{
+        printf(" --- MENU ---\n");
+        printf("1 - Criar tarefa\n2 - Deletar tarefa\n3 - Listar tarefas\n4 - Alterar tarefas\n0 - Sair.\n");
+        printf("Digite a operacao que deseja realizar: ");
+        scanf("%d",&opcao);
+        getchar();
+        switch(opcao){
+            case 1:
+                CriarTarefa(Lista);
+                break;
+            case 2:
+                DeletarTarefa(Lista);
+                break;
+            case 3:
+                ListarTarefas(Lista);
+                break;
+            case 4:
+                AlterarTarefas(Lista);
+                break;
+            case 5:
 
 void CriarTarefa(){
     char tarefa[100];
@@ -94,6 +127,71 @@ void ListarTarefas2(){
             int num = i + 1;
             printf("Tarefa %d: %s\n",num, Lista[i].tarefa);
         }
+    }
+};
+
+void AlterarTarefas(Tarefa Main[]){
+    char tarefanew[100];
+    char descricaonew[100];
+    int prioridadenew;
+    char estadonew[100];
+    char categorianew[100];
+    int posicao;
+    int alterado;
+    int opcao;
+    ListarTarefas2(Main);
+    printf("Digite a tarefa que deseja alterar: ");
+    scanf("%d", &alterado);
+    posicao = alterado - 1;
+    printf("1. Tarefa\n2. Descricao\n3. Prioridade\n4.Estado\n");
+    printf("Digite qual opcao deseja alterar: ");
+    scanf("%d", &opcao);
+    limpar();
+    if (opcao == 1){
+        size_t a;
+        printf("Digite o novo nome da Tarefa: ");
+        fgets(tarefanew,sizeof (tarefanew), stdin);
+        a = strlen(tarefanew);
+        if (tarefanew[a - 1] == '\n')tarefanew[--a] = 0;
+        sprintf(Main[posicao].tarefa,tarefanew);
+        printf("\nO nome da Tarefa foi alterado!\n\n");
+    }
+
+    if (opcao == 2){
+        size_t a;
+        printf("Digite uma nova descricao para a Tarefa: ");
+        fgets(descricaonew, sizeof(descricaonew), stdin);
+        a = strlen(descricaonew);
+        if (descricaonew[a - 1] == '\n')descricaonew[--a] = 0;
+        sprintf(Main[posicao].descricao,descricaonew);
+        printf("\nA descricao foi alterada!\n\n");
+    }
+
+    if (opcao == 3){
+        printf("Digite uma nova prioridade para a Tarefa: ");
+        scanf("%d", &prioridadenew);
+        Main[posicao].prioridade = prioridadenew;
+        printf("\nA prioridade foi alterada!\n\n");
+    }
+
+    if (opcao == 4){
+        size_t a;
+        printf("Digite o novo estado da Tarefa(Completo, Em andamento ou Nao iniciado): ");
+        fgets(estadonew, sizeof(estadonew), stdin);
+        a = strlen(descricaonew);
+        if (descricaonew[a - 1] == '\n')descricaonew[--a] = 0;
+        sprintf(Main[posicao].estado, estadonew);
+        printf("\nO estado da Tarefa foi alterado!\n\n");
+    }
+
+    if (opcao == 5){
+        size_t a;
+        printf("Digite a nova categoria da Tarefa(Lazer, Estudos, Trabalho ou Eventos)");
+        fgets(categorianew, sizeof(categorianew), stdin);
+        a = strlen(descricaonew);
+        if (descricaonew[a - 1] == '\n')descricaonew[--a] = 0;
+        sprintf(Main[posicao].categoria, categorianew);
+        printf("\nA categoria da Tarefa foi alterada!");
     }
 };
 

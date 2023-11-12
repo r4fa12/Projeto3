@@ -16,4 +16,4 @@ void DeletarTarefa();
 void ListarTarefas();
 int criararquivo();
 int lerarquivo();
-int numtarefas();
+void AlterarTarefas(Tarefa Main[]);
