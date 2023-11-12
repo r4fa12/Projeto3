@@ -334,6 +334,127 @@ void FiltrarTarefasPC(Tarefa Main[]){
     }
 }
 
+void ExportarTarefasPrioridade(Tarefa Main[]){
+    int num;
+    int p;
+    printf("Digite a prioridade da Tarefa que deseja exportar: ");
+    scanf("%d", &p);
+    FILE *arqprioridade = fopen("tarefas.txt", "w");
+    fprintf(arqprioridade, "Tarefas com a prioridade: %d\n", p);
+    fprintf(arqprioridade, "\n--- Tarefas ---\n");
+    fprintf(arqprioridade, "\n");
+    for (int i = 0; i < maxtarefas; i++){
+        if(Main[i].prioridade == p && Main[i].existe == 1){
+            num = num + 1;
+            fprintf(arqprioridade, "Tarefa: %s -> Prioridade: %d, Categoria: %s, Estado: %s, Descricao: %s\n", Main[i].tarefa, Main[i].prioridade, Main[i].categoria, Main[i].estado, Main[i].descricao);
+        }
+
+    }
+    if (num == 0){
+        printf("Nao existem Tarefas com essa prioridade!\n");
+        fprintf(arqprioridade, "Nao existem Tarefas com a prioridade %d!\n", p);
+    }
+    fclose(arqprioridade);
+}
+
+void ExportarTarefasCategoria(Tarefa Main[]){
+    char c[15];
+    char categoria1[15];
+    char categoria2[15];
+    char categoria3[15];
+    char categoria4[15];
+    sprintf(categoria1, "Lazer");
+    sprintf(categoria2, "Estudos");
+    sprintf(categoria3, "Trabalho");
+    sprintf(categoria4, "Eventos");
+    int x1;
+    int x2;
+    int x3;
+    int x4;
+    int x5;
+    size_t b;
+    int num;
+    do{
+        printf("Digite a categoria da Tarefa que deseja filtrar(Lazer, Estudos, Trabalho ou Eventos): ");
+        fgets(c, sizeof(c), stdin);
+        b = strlen(c);
+        if(c[b - 1] == '\n')c[--b] = 0;
+        x1 = strcmp(c, categoria1);
+        x2 = strcmp(c, categoria2);
+        x3 = strcmp(c, categoria3);
+        x4 = strcmp(c, categoria4);
+    }while (x1 != 0 && x2 != 0 && x3 != 0 && x4 != 0);
+    FILE *arqcategoria = fopen("tarefas.txt", "w");
+    fprintf(arqcategoria, "Tarefas com a categoria %s\n", c);
+    fprintf(arqcategoria, "\n--- Tarefas ---\n");
+    fprintf(arqcategoria, "\n");
+    for(int z = 0; z < maxtarefas; z++){
+        for(int i = 0; i < maxtarefas; i++){
+            x5 = strcmp(c, Main[i].categoria);
+            if (x5 == 0 && Main[i].prioridade == z && Main[i].existe == 1){
+                num = num + 1; //contador para ver se existe uma tarefa com a categoria desejada, caso exista vai adicinador 1 ao num
+                printf("Tarefa: %s\n", Main[i].tarefa);
+                fprintf(arqcategoria, "Tarefa: %s -> Prioridade: %d, Categoria: %s, Estado: %s, Descricao: %s\n", Main[i].tarefa, Main[i].prioridade, Main[i].categoria, Main[i].estado, Main[i].descricao);
+            }
+            }
+        }
+    if (num == 0){
+        printf("Nao existem Tarefas com essa categora!\n");
+        fprintf(arqcategoria, "Nao existem Tarefas com a categoria %s!\n", c);
+    }
+    fclose(arqcategoria);
+}
+
+void ExportarTarefasPC(Tarefa Main[]){
+    char c[15];
+    char categoria1[15];
+    char categoria2[15];
+    char categoria3[15];
+    char categoria4[15];
+    sprintf(categoria1, "Lazer");
+    sprintf(categoria2, "Estudos");
+    sprintf(categoria3, "Trabalho");
+    sprintf(categoria4, "Eventos");
+    int x1;
+    int x2;
+    int x3;
+    int x4;
+    int x5;
+    size_t b;
+    int num;
+    int p;
+    do{
+        printf("Digite a prioridade da Tarefa que deseja exportar: ");
+        scanf("%d", &p);
+        limpar();
+        printf("Digite a categoria da Tarefa que deseja filtrar(Lazer, Estudos, Trabalho ou Eventos): ");
+        fgets(c, sizeof(c), stdin);
+        b = strlen(c);
+        if(c[b - 1] == '\n')c[--b] = 0;
+        x1 = strcmp(c, categoria1);
+        x2 = strcmp(c, categoria2);
+        x3 = strcmp(c, categoria3);
+        x4 = strcmp(c, categoria4);
+    }while (x1 != 0 && x2 != 0 && x3 != 0 && x4 != 0);
+    FILE *arqPC = fopen("tarefas.txt", "w");
+    fprintf(arqPC, "Tarefas com a prioridade %d e categoria %s\n", p, c);
+    fprintf(arqPC, "\n--- Tarefas ---\n");
+    fprintf(arqPC, "\n");
+    for (int i = 0; i < maxtarefas; i++){
+        x5 = strcmp(c, Main[i].categoria);
+        if (Main[i].prioridade == p && x5 == 0 && Main[i].existe == 1){
+            num = num + 1;
+            printf("Tarefa: %s\n", Main[i].tarefa);
+            fprintf(arqPC, "Tarefa: %s -> Prioridade: %d, Categoria: %s, Estado: %s, Descricao: %s\n", Main[i].tarefa, Main[i].prioridade, Main[i].categoria, Main[i].estado, Main[i].descricao);
+        }
+    }
+    if (num == 0){
+        printf("Nao existem Tarefas com essa prioridade e categora!\n");
+        fprintf(arqPC, "Nao existem Tarefas com a prioridade %d e categoria %s!\n", p, c);
+    }
+    fclose(arqPC);
+}
+
 int lerarquivo(){
     FILE*arqtarefas = fopen("arqtarefas","rb");
   if(arqtarefas == NULL){
