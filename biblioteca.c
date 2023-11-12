@@ -4,24 +4,6 @@
 #include <string.h>
 
 
-Tarefa Lista[maxtarefas];
-
-int criararquivo(){
-    FILE*arqtarefas = fopen("arqtarefas","wb");
-  if(arqtarefas == NULL){
-    return 1;
-  }
-    fwrite(&Lista,sizeof(Tarefa),maxtarefas,arqtarefas);
-    fclose(arqtarefas);
-    return 0;
-}
-
-#include "biblioteca.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-
 void limpar() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
@@ -59,9 +41,10 @@ void Menu(){
     int opcao;
     do{
         printf(" --- MENU ---\n");
-        printf("1 - Criar tarefa\n2 - Deletar tarefa\n3 - Listar tarefas\n4 - Alterar tarefas\n
-        "5 - Filtrar tarefas pela prioridade\n6 - Filtrar tarefas pelo estado\n7 - Filtrar tarefas pela categoria\n"
-               "8 - Filtrar tarefas pela prioridade e pela categoria\n0 - Sair.\n");
+        printf("1 - Criar tarefa\n2 - Deletar tarefa\n3 - Listar tarefas\n4 - Alterar tarefas\n"
+               "5 - Filtrar tarefas pela prioridade\n6 - Filtrar tarefas pelo estado\n7 - Filtrar tarefas pela categoria\n"
+               "8 - Filtrar tarefas pela prioridade e pela categoria\n9 - Exportar tarefas pela prioridade\n"
+               "10 - Exportar tarefas pela categoria\n11 - Exportar tarefas pela prioridade e categoria\n0 - Sair.\n");
         printf("Digite a operacao que deseja realizar: ");
         scanf("%d",&opcao);
         getchar();
@@ -90,55 +73,127 @@ void Menu(){
             case 8:
                 FiltrarTarefasPC(Lista);
                 break;
+            case 9:
+                ExportarTarefasPrioridade(Lista);
+                break;
+            case 10:
+                ExportarTarefasCategoria(Lista);
+                break;
+            case 11:
+                ExportarTarefasPC(Lista);
+                break;
+        };
+    }while(opcao != 0);
+    criararquivo(Lista, "arqtarefas");
 
-void CriarTarefa(){
+};
+
+void CriarTarefa(Tarefa Main[]){
     char tarefa[100];
     char descricao[300];
     int prioridade;
+    char estado[100];
+    char categoria[100];
+    size_t a;
+    size_t b;
+    size_t c;
+    size_t d;
     printf("Digite sua tarefa: ");
-    fgets(tarefa,sizeof(tarefa),stdin);        
-    printf("Digite aqui a descricao desta tarefa: ");           
-    fgets(descricao,sizeof(descricao),stdin);       
+    fgets(tarefa,sizeof(tarefa),stdin);
+    a = strlen(tarefa);
+    if (tarefa[a - 1] == '\n') tarefa[--a] = 0; //tira o barra n do fgets
+    printf("Digite aqui a descricao desta tarefa: ");
+    fgets(descricao,sizeof(descricao),stdin);
+    b = strlen(descricao);
+    if (descricao[b - 1] == '\n') descricao[--b] = 0; //tira o barra n do fgets
     printf("Digite aqui a prioridade desta tarefa: ");
     scanf("%d",&prioridade);
+    limpar();
+    char novoestado[100];
+    sprintf(novoestado, "Completo");
+    char novoestado2[100];
+    sprintf(novoestado2, "Em andamento");
+    char novoestado3[100];
+    sprintf(novoestado3, "Nao iniciado");
+    int comparacao;
+    int comparacao2;
+    int comparacao3;
+    do{
+        printf("Digite qual o estado da Tarefa(Completo, Em andamento ou Nao iniciado): ");
+        fgets(estado, sizeof(estado),stdin);
+        d = strlen(estado);
+        if (estado[d - 1] == '\n') estado[--d] = 0; //tira o barra n do fgets
+        comparacao = strcmp(estado, novoestado);
+        comparacao2 = strcmp(estado, novoestado2);
+        comparacao3 = strcmp(estado, novoestado3);
+    } while (comparacao != 0 && comparacao2 != 0 && comparacao3 != 0);
+    char categoria1[15];
+    char categoria2[15];
+    char categoria3[15];
+    char categoria4[15];
+    sprintf(categoria1, "Lazer");
+    sprintf(categoria2, "Estudos");
+    sprintf(categoria3, "Trabalho");
+    sprintf(categoria4, "Eventos");
+    int comparacao4;
+    int comparacao5;
+    int comparacao6;
+    int comparacao7;
+    do{
+        printf("Digite qual categoria se encaixa na nova Tarefa (Lazer, Estudos, Trabalho ou Eventos): ");
+        fgets(categoria, sizeof(categoria), stdin);
+        c = strlen(categoria);
+        if(categoria[c - 1] == '\n')categoria[--c] = 0;
+        comparacao4 = strcmp(categoria, categoria1);
+        comparacao5 = strcmp(categoria, categoria2);
+        comparacao6 = strcmp(categoria, categoria3);
+        comparacao7 = strcmp(categoria, categoria4);
+    }while (comparacao4 != 0 && comparacao5 != 0 && comparacao6 != 0 && comparacao7 != 0);
     for(int i = 0; i < maxtarefas; i++){
-        if (Lista[i].existe == 0){
-            strcpy(Lista[i].tarefa, tarefa);                
-            strcpy(Lista[i].descricao, descricao);
-            Lista[i].prioridade = prioridade;
-            Lista[i].existe = 1;
+        if (Main[i].existe == 0){
+            Main[i].posicao = 1;
+            strcpy(Main[i].tarefa, tarefa);
+            strcpy(Main[i].descricao, descricao);
+            Main[i].prioridade = prioridade;
+            strcpy(Main[i].estado, estado);
+            strcpy(Main[i].categoria, categoria);
+            Main[i].existe = 1;
             break;
         };
     };
 };
-void DeletarTarefa(){
-    printf("Aqui está sua lista!\n");               
-    ListarTarefas2();                                     
-    int del;                                                
+
+void DeletarTarefa(Tarefa Main[]){
+    printf("Aqui esta sua lista!\n");
+    ListarTarefas2(Main);
+    int del;
     printf("Qual tarefa deseja excluir: ");
     scanf("%d", &del);
     int pos = del - 1;
-    Lista[pos].existe = 0;
+    Main[pos].existe = 0;
     printf("Tarefa excluida com sucesso!");
 };
-void ListarTarefas(){
-    printf("--- LISTA DE TAREFAS ---\n");               
-    printf("\n");                                       
+
+void ListarTarefas(Tarefa Main[]){
+    printf("--- LISTA DE TAREFAS ---\n");
+    printf("\n");
     for(int i = 0; i < maxtarefas; i++){
-        if(Lista[i].existe == 1) {
-            printf("Tarefa: %s", Lista[i].tarefa);
-            printf("Descricao: %s", Lista[i].descricao);
-            printf("Prioridade: %d", Lista[i].prioridade);
-            printf("\n-----------------\n");
+        if(Main[i].existe == 1) {
+            printf("Tarefa: %s\n", Main[i].tarefa);
+            printf("Descricao: %s\n", Main[i].descricao);
+            printf("Prioridade: %d\n", Main[i].prioridade);
+            printf("Estado: %s\n", Main[i].estado);
+            printf("Categoria: %s\n", Main[i].categoria);
+            printf("\n-----------------\n\n");
         }
     }
 };
 
-void ListarTarefas2(){
-    for(int i = 0; i < maxtarefas; i++){            
-        if(Lista[i].existe == 1) {
+void ListarTarefas2(Tarefa Main[]){
+    for(int i = 0; i < maxtarefas; i++){
+        if(Main[i].existe == 1) {
             int num = i + 1;
-            printf("Tarefa %d: %s\n",num, Lista[i].tarefa);
+            printf("Tarefa %d: %s\n",num, Main[i].tarefa);
         }
     }
 };
@@ -454,13 +509,3 @@ void ExportarTarefasPC(Tarefa Main[]){
     }
     fclose(arqPC);
 }
-
-int lerarquivo(){
-    FILE*arqtarefas = fopen("arqtarefas","rb");
-  if(arqtarefas == NULL){
-    return 1;
-  } 
-    fread(&Lista,sizeof(Tarefa),maxtarefas,arqtarefas);
-    fclose(arqtarefas);
-    return 0;
-};
